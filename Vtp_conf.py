@@ -4,6 +4,9 @@ parser = argparse.ArgumentParser(description="Configure some gear.")
 parser.add_argument("--vtp", help="Configure simple vtp", action="store_true")
 parser.add_argument("--vlan", help="Configure simple vlans", action="store_true")
 parser.add_argument("--port", help="Configure interface to Vlan", action="store_true")
+parser.add_argument("--fast", help="Enable portfast on all non-trunking interfaces", action="store_true")
+parser.add_argument("--single", help="Enable a port and portfast for a single port", action="store_true")
+parser.add_argument("--gateway", help="Define a default gateway", action="store_true")
 
 def vtp_configure():
     a, b, c = input("Please enter the mode, domain, and password: ").split()
@@ -38,6 +41,33 @@ def port_vlan():
         print("interface range fastethernet " + first + " " + "- " + last)
         print("switchport  access vlan "+  vlan_number)
 
+def port_fast():
+    mode = input("Please select spanning-tree mode, unless default is desired: ")
+    primary, id = input("Please indicate if this device will be root primary/secondary and type in a vlan ID: ").split()
+    print("en")
+    print("conf t")
+    if len(primary) > 0:
+        print("spanning-tree vlan " + id + " root " + primary)
+    elif len(mode) > 0:
+        print("spanning-tree mode " + mode)
+    else:
+        print("spanning-tree portfast default")
+
+def single_portfast():
+    port = input("Which port would you like to enable portfast on? ")
+    print("en")
+    print("conf t")
+    print("interface fastethernet " + port)
+    print("spanning-tree portfast")
+    print("no shut")
+
+def gateway():
+    ipaddr = input("What is the IP address for the gateway? ")
+    print("en")
+    print("conf t")
+    print("ip default-gateway " + ipaddr)
+
+
 
 args = parser.parse_args()
 if args.vtp:
@@ -46,6 +76,12 @@ elif args.vlan:
     vlan()
 elif args.port:
     port_vlan()
+elif args.fast:
+    port_fast()
+elif args.single:
+    single_portfast()
+elif args.gateway:
+    gateway()
 else:
     pass
 
