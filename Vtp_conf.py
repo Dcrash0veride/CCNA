@@ -11,7 +11,10 @@ def vtp_configure():
     print("conf t")
     print("vtp mode" + " " + a)
     print("vtp domain" + " " + b)
-    print("vtp password" + " " + c)
+    if c == "None":
+        pass
+    else:
+        print("vtp password " + c)
     if a == "server":
         print("vtp pruning")
 
